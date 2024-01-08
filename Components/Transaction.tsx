@@ -3,12 +3,18 @@ import {View,Text,StyleSheet,Modal,TextInput} from "react-native";
 import {useAppDispatch, useAppSelector} from "../store/hooks";
 import{income,outcome} from "../store/slice";
 import {addTransaction} from "../store/historySlice";
+import {BlurView} from "@react-native-community/blur";
 
 export default function Transaction(){
- const [modalVisible,setModalVisible] = useState<boolean>(false)
- const [type,setType] = useState<"income"|"outcome">("outcome")
- const [inputValue,changeInputValue] = useState<string>("")
- const dispatch = useAppDispatch()
+    const [modalVisible,setModalVisible] = useState<boolean>(false)
+    const [type,setType] = useState<"income"|"outcome">("outcome")
+    const [inputValue,changeInputValue] = useState<string>("")
+    const dispatch = useAppDispatch()
+
+    const [openCategory,setOpenCategory] = useState<boolean>(false)
+    const [category,setCategory] =
+        useState<"Select category"|{emoji:string,name:string}>("Select category")
+
 
  const handleDispatch = (count:string) =>{
      const date = new Date().toDateString().split(" ").slice(1,3).join(" ")
@@ -32,23 +38,45 @@ export default function Transaction(){
             <View style={styles.modal}>
             <Text style={styles.close} onPress={()=>setModalVisible(!modalVisible)}>X</Text>
             <View style={styles.inputContainer}>
-            <TextInput
-                style={styles.input}
-                inputMode="decimal"
-                placeholder="0"
-                placeholderTextColor="white"
-                value={inputValue}
-                onChangeText={changeInputValue}
-            />
+                <TextInput
+                    style={styles.input}
+                    inputMode="decimal"
+                    placeholder="0"
+                    placeholderTextColor="black"
+                    value={inputValue}
+                    onChangeText={changeInputValue}
+                />
             <Text style={styles.dollar}>$</Text>
             </View>
                 <View style={styles.buttonContainer} >
                  <View style={type === "income" && styles.buttonActive}>
-                <Text onPress={()=>setType("income")} style={styles.button}>Income</Text>
+                    <Text onPress={()=>setType("income")} style={styles.button}>Income</Text>
                  </View>
                     <View style={type === "outcome" && styles.buttonActive}>
-                        <Text onPress={()=>setType("outcome")} style={styles.button}>Expense</Text></View>
+                        <Text onPress={()=>setType("outcome")} style={styles.button}>Expense</Text>
                     </View>
+
+                    </View>
+                <View>
+                    <View>
+                        <Text onPress={()=>setOpenCategory(true)}>Select category</Text>
+                    </View>
+                    <Modal
+                        transparent={true}
+                        visible={openCategory}
+                        animationType="fade"
+                    >
+                        <BlurView
+                            style={styles.categoryStyle}
+                            blurType="light"
+                            
+                        >
+                        <View>
+                        </View>
+                        </BlurView>
+                    </Modal>
+                </View>
+
                 <Text
                     style={styles.ok}
                     onPress={()=>handleDispatch(inputValue)}
@@ -122,6 +150,10 @@ const styles = StyleSheet.create({
     },
     ok:{
         fontSize:40,
+    },
+    categoryStyle:{
+        width:"100%",
+        height:"100%",
     },
     elevation:{
         elevation:5,
