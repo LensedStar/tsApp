@@ -1,20 +1,37 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {useState} from "react";
+import {StyleSheet, Text, View} from 'react-native';
+import {Provider} from "react-redux";
+import {store} from "./store/store";
+import Balance from "./Components/Balance";
+import Transaction from "./Components/Transaction";
+import History from "./Components/History";
 
-export default function App() {
+const App=()=>{
+     const [balance,setBalance]=useState<number|0>(0)
   return (
+      <>
+    <Provider store={store}>
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
+        <Balance />
+        <History />
+        <Transaction />
     </View>
+      </Provider>
+     </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    display:"flex",
+    flexDirection:"column",
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFF',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
+    justifyContent: 'space-between',
+    height:"100%",
+    width:"100%"
+  }
 });
+
+export default App
